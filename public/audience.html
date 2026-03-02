@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SMMA Kahoot Audience</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=Sora:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page audience-theme audience-page">
+      <section class="card join-shell" id="joinCard">
+        <h1 class="title-main">Join Game</h1>
+        <p class="muted">Enter your name to play and appear on leaderboard.</p>
+        <div class="join-row">
+          <input id="nameInput" placeholder="Your name" maxlength="32" />
+          <button class="primary" id="joinBtn">Join</button>
+        </div>
+        <p id="joinError" class="join-error"></p>
+      </section>
+
+      <section class="grid audience-grid" id="gameCard" style="display:none; margin-top:16px">
+        <article class="card audience-topbar">
+          <p id="phase" class="aud-phase">Waiting...</p>
+          <div class="aud-pills">
+            <span class="pill" id="myRank">Rank -</span>
+            <span class="pill" id="myScore">Score 0</span>
+            <span class="pill" id="timer">0s</span>
+          </div>
+        </article>
+
+        <article class="card audience-question">
+          <p id="questionTitle" class="muted aud-question-title"></p>
+          <div class="aud-options" id="options"></div>
+          <p id="answerStatus" class="answer-status"></p>
+        </article>
+
+        <article class="card audience-leaderboard">
+          <h3>Leaderboard</h3>
+          <div id="leaderboard" style="margin-top:8px"></div>
+        </article>
+
+        <article class="card audience-final">
+          <h3>Final Standing</h3>
+          <div id="finalStanding" style="margin-top:8px"></div>
+        </article>
+      </section>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/audience.js"></script>
+  </body>
+</html>

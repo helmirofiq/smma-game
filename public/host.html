@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SMMA Kahoot Host</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=Sora:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="host-screen">
+    <main class="host-app">
+      <section id="lobbyScene" class="scene scene-lobby active">
+        <div class="lobby-grid">
+          <article class="lobby-center card">
+            <p class="chip">SMMA GAME NIGHT</p>
+            <h1 class="title-main">SCAN TO JOIN</h1>
+            <p class="muted" id="hostStatus">Connecting to server...</p>
+            <img id="qr" alt="Join QR" class="qr-big" />
+            <p id="joinUrl" class="join-url"></p>
+
+            <div class="lobby-config">
+              <label>
+                Rounds
+                <input id="roundCount" type="number" min="1" max="70" value="10" />
+              </label>
+              <label>
+                Seconds / Q
+                <input id="questionDuration" type="number" min="10" max="120" value="30" />
+              </label>
+              <label>
+                AI Select
+                <input id="selectionDuration" type="number" min="4" max="20" value="8" />
+              </label>
+            </div>
+
+            <button id="startBtn" class="start-future" type="button" disabled>START GAME</button>
+          </article>
+
+          <aside class="participants-panel card">
+            <h2>Joined Participants</h2>
+            <p class="muted"><span id="playersCount">0</span> players connected</p>
+            <div id="participantList" class="participant-list"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="gameScene" class="scene scene-game">
+        <header class="game-top card">
+          <p class="chip" id="phaseLabel">Phase: lobby</p>
+          <div class="timer-ring-wrap" id="timerWrap">
+            <svg class="timer-ring" viewBox="0 0 120 120" aria-hidden="true">
+              <circle cx="60" cy="60" r="52" class="ring-bg"></circle>
+              <circle cx="60" cy="60" r="52" class="ring-progress" id="ringProgress"></circle>
+            </svg>
+            <div class="timer-value" id="timer">0</div>
+          </div>
+          <p class="chip" id="roundInfo">Round 0/0</p>
+        </header>
+
+        <section class="game-main card" id="selectingWrap">
+          <h2 class="selecting-title">AI is selecting a name...</h2>
+          <div id="nameCloud" class="name-cloud"></div>
+        </section>
+
+        <section class="game-main card hidden" id="questionWrap">
+          <h2 id="nameDisplay" class="host-name">Waiting...</h2>
+          <p id="subInfo" class="muted subline"></p>
+          <div id="hostOptions" class="options"></div>
+        </section>
+
+        <section id="gameBottom" class="game-bottom grid two">
+          <article class="card">
+            <h3>Leaderboard</h3>
+            <div id="leaderboard"></div>
+          </article>
+          <article class="card">
+            <h3>Final Podium</h3>
+            <div id="podium"></div>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/host.js"></script>
+  </body>
+</html>
