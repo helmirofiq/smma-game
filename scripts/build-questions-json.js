@@ -10,10 +10,7 @@ const CSV_CANDIDATES = [
 
 function findCsv() {
   const file = CSV_CANDIDATES.find((p) => fs.existsSync(p));
-  if (!file) {
-    throw new Error(`CSV not found. Checked: ${CSV_CANDIDATES.join(', ')}`);
-  }
-  return file;
+  return file || null;
 }
 
 function clean(value) {
@@ -26,6 +23,16 @@ function isPlaceholder(value) {
 }
 
 const csvPath = findCsv();
+const outPath = path.join(__dirname, '..', 'data', 'questions.json');
+
+if (!csvPath) {
+  if (fs.existsSync(outPath)) {
+    console.log(`CSV not found. Reusing existing ${outPath}`);
+    process.exit(0);
+  }
+  throw new Error(`CSV not found and ${outPath} does not exist. Checked: ${CSV_CANDIDATES.join(', ')}`);
+}
+
 const raw = fs.readFileSync(csvPath, 'utf8');
 const rows = parse(raw, { columns: true, skip_empty_lines: true, bom: true });
 
@@ -41,7 +48,6 @@ const questions = rows
   .filter((row) => ![row.fact1, row.fact2, row.fictive].some(isPlaceholder))
   .filter((row) => new Set([row.fact1.toLowerCase(), row.fact2.toLowerCase(), row.fictive.toLowerCase()]).size === 3);
 
-const outPath = path.join(__dirname, '..', 'data', 'questions.json');
 fs.writeFileSync(outPath, JSON.stringify(questions, null, 2) + '\n');
 
 console.log(`Wrote ${questions.length} questions to ${outPath}`);
