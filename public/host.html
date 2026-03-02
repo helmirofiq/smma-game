@@ -39,6 +39,7 @@
             </div>
 
             <button id="startBtn" class="start-future" type="button" disabled>START GAME</button>
+            <button class="restart-session" type="button" data-reset-game>Restart Session</button>
           </article>
 
           <aside class="participants-panel card">
@@ -59,7 +60,10 @@
             </svg>
             <div class="timer-value" id="timer">0</div>
           </div>
-          <p class="chip" id="roundInfo">Round 0/0</p>
+          <div class="game-top-right">
+            <p class="chip" id="roundInfo">Round 0/0</p>
+            <button class="restart-session small" type="button" data-reset-game>Restart</button>
+          </div>
         </header>
 
         <section class="game-main card" id="selectingWrap">

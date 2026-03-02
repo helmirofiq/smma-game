@@ -123,6 +123,7 @@ let game = {
   answers: new Map(),
   usedQuestionNames: new Set(),
   loopActive: false,
+  loopToken: 0,
   lastRoundResult: null,
   finalLeaderboard: [],
 };
@@ -226,18 +227,43 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function waitWithStateTicks(seconds) {
+async function waitWithStateTicks(seconds, loopToken) {
   for (let i = 0; i < seconds; i += 1) {
+    if (loopToken !== game.loopToken) return false;
     await wait(1000);
+    if (loopToken !== game.loopToken) return false;
     emitState();
+  }
+  return true;
+}
+
+function resetSessionState() {
+  game.loopToken += 1;
+  game.loopActive = false;
+  game.status = 'lobby';
+  game.currentRound = 0;
+  game.totalRounds = 0;
+  game.question = null;
+  game.questionEndsAt = null;
+  game.selectionEndsAt = null;
+  game.leaderboardEndsAt = null;
+  game.answers = new Map();
+  game.usedQuestionNames = new Set();
+  game.lastRoundResult = null;
+  game.finalLeaderboard = [];
+
+  for (const player of players.values()) {
+    player.score = 0;
+    player.lastAnswer = null;
   }
 }
 
-async function runGameLoop() {
+async function runGameLoop(loopToken) {
   if (game.loopActive) return;
   game.loopActive = true;
 
   for (let i = 1; i <= game.totalRounds; i += 1) {
+    if (loopToken !== game.loopToken) break;
     game.currentRound = i;
     game.status = 'selecting';
     game.answers = new Map();
@@ -251,15 +277,17 @@ async function runGameLoop() {
     }
     emitState();
 
-    await waitWithStateTicks(game.selectionDuration);
+    if (!(await waitWithStateTicks(game.selectionDuration, loopToken))) break;
 
+    if (loopToken !== game.loopToken) break;
     game.status = 'question';
     game.questionEndsAt = Date.now() + game.questionDuration * 1000;
     game.selectionEndsAt = null;
     game.leaderboardEndsAt = null;
     emitState();
-    await waitWithStateTicks(game.questionDuration);
+    if (!(await waitWithStateTicks(game.questionDuration, loopToken))) break;
 
+    if (loopToken !== game.loopToken || !game.question) break;
     const correctOption = game.question.options.find((option) => option.isFictive);
     const leaderboard = getSortedLeaderboard();
     const correctPlayers = leaderboard.filter((entry) => entry.lastAnswer?.isCorrect);
@@ -283,21 +311,24 @@ async function runGameLoop() {
     emitState();
 
     await wait(5000);
+    if (loopToken !== game.loopToken) break;
 
     game.status = 'leaderboard';
     game.leaderboardEndsAt = Date.now() + game.leaderboardPause * 1000;
     emitState();
-    await waitWithStateTicks(game.leaderboardPause);
+    if (!(await waitWithStateTicks(game.leaderboardPause, loopToken))) break;
   }
 
-  game.status = 'final';
-  game.finalLeaderboard = getSortedLeaderboard();
-  game.question = null;
-  game.questionEndsAt = null;
-  game.selectionEndsAt = null;
-  game.leaderboardEndsAt = null;
-  game.lastRoundResult = null;
-  emitState();
+  if (loopToken === game.loopToken) {
+    game.status = 'final';
+    game.finalLeaderboard = getSortedLeaderboard();
+    game.question = null;
+    game.questionEndsAt = null;
+    game.selectionEndsAt = null;
+    game.leaderboardEndsAt = null;
+    game.lastRoundResult = null;
+    emitState();
+  }
 
   game.loopActive = false;
 }
@@ -395,6 +426,8 @@ io.on('connection', (socket) => {
 
     game = {
       ...game,
+      loopToken: game.loopToken + 1,
+      loopActive: false,
       status: 'lobby',
       roundCount: safeRounds,
       questionDuration: safeDuration,
@@ -412,12 +445,20 @@ io.on('connection', (socket) => {
       player.lastAnswer = null;
     }
 
-    runGameLoop();
+    runGameLoop(game.loopToken);
     if (typeof ack === 'function') {
       ack({
         ok: true,
         message: `Game started: ${safeRounds} rounds x ${safeDuration}s (selection ${safeSelection}s).`,
       });
+    }
+  });
+
+  socket.on('host:reset', (_, ack) => {
+    resetSessionState();
+    emitState();
+    if (typeof ack === 'function') {
+      ack({ ok: true, message: 'Session reset. Scores and winners cleared.' });
     }
   });
 

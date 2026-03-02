@@ -13,6 +13,7 @@ const hostOptions = document.getElementById('hostOptions');
 const leaderboard = document.getElementById('leaderboard');
 const podium = document.getElementById('podium');
 const startBtn = document.getElementById('startBtn');
+const resetButtons = document.querySelectorAll('[data-reset-game]');
 const roundCount = document.getElementById('roundCount');
 const questionDuration = document.getElementById('questionDuration');
 const selectionDuration = document.getElementById('selectionDuration');
@@ -331,6 +332,14 @@ startBtn.addEventListener('click', () => {
       if (!res?.ok) lobbyScene.classList.remove('launching');
     },
   );
+});
+
+resetButtons.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    socket.emit('host:reset', {}, (res) => {
+      hostStatus.textContent = res?.message || 'Session reset.';
+    });
+  });
 });
 
 loadQuestionNames().catch(() => {
