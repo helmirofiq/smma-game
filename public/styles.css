@@ -266,11 +266,10 @@ button.primary:disabled {
   margin: 0;
   overflow: hidden;
   background:
-    radial-gradient(circle at 10% 22%, rgba(255, 38, 55, 0.35), transparent 32%),
-    radial-gradient(circle at 14% 22%, rgba(0, 0, 0, 0) 0 6%, rgba(255, 38, 55, 0.24) 6.5% 9.5%, rgba(0, 0, 0, 0) 10% 13%, rgba(255, 38, 55, 0.2) 13.5% 16%, rgba(0, 0, 0, 0) 16.5% 20%),
-    radial-gradient(circle at 86% 10%, rgba(255, 255, 255, 0.08), transparent 34%),
-    linear-gradient(128deg, #08080b 0%, #11141d 46%, #1c1f29 100%);
-  color: #f7f7fb;
+    radial-gradient(circle at 10% 22%, rgba(255, 58, 75, 0.2), transparent 34%),
+    radial-gradient(circle at 84% 8%, rgba(255, 186, 192, 0.35), transparent 35%),
+    linear-gradient(132deg, #fff8f8 0%, #fffefe 52%, #fff7f8 100%);
+  color: #161824;
 }
 
 .host-app {
@@ -281,11 +280,17 @@ button.primary:disabled {
 .scene {
   position: absolute;
   inset: 0;
-  padding: 10px 0;
+  padding: 32px;
   opacity: 0;
   pointer-events: none;
   transform: scale(1.02);
   transition: opacity 420ms ease, transform 420ms ease;
+}
+
+.scene > * {
+  max-width: 1720px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .scene.active {
@@ -295,22 +300,22 @@ button.primary:disabled {
 }
 
 .scene .card {
-  background: rgba(13, 14, 20, 0.78);
-  border-color: rgba(255, 83, 96, 0.36);
-  color: #fafafe;
-  box-shadow: 0 14px 50px rgba(0, 0, 0, 0.34);
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(255, 83, 96, 0.34);
+  color: #161b2f;
+  box-shadow: 0 16px 50px rgba(167, 51, 64, 0.12);
 }
 
 .scene-game .game-top,
 .scene-game .game-main,
 .scene-game .game-bottom {
-  border-left-width: 0;
-  border-right-width: 0;
-  border-radius: 0;
+  border-left-width: 1px;
+  border-right-width: 1px;
+  border-radius: 20px;
 }
 
 .scene .muted {
-  color: #d7d8e1;
+  color: #4d536d;
 }
 
 .chip {
@@ -318,19 +323,20 @@ button.primary:disabled {
   margin: 0;
   padding: 8px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 83, 96, 0.48);
-  background: rgba(60, 15, 23, 0.52);
+  border: 1px solid rgba(255, 83, 96, 0.45);
+  background: rgba(255, 239, 241, 0.9);
+  color: #761924;
   font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .lobby-grid {
-  height: calc(100vh - 20px);
+  height: calc(100vh - 64px);
   display: grid;
   grid-template-columns: 1.5fr 1fr;
-  gap: 12px;
-  padding: 0 10px;
+  gap: 20px;
+  padding: 0 12px;
 }
 
 .lobby-center {
@@ -352,7 +358,7 @@ button.primary:disabled {
 .join-url {
   margin: 0;
   font-size: 14px;
-  color: #ff929c;
+  color: #bc2b3b;
 }
 
 .lobby-config {
@@ -366,14 +372,14 @@ button.primary:disabled {
   flex-direction: column;
   gap: 4px;
   font-size: 12px;
-  color: #f0d0d3;
+  color: #5c2730;
 }
 
 .lobby-config input {
   width: 130px;
-  background: rgba(26, 19, 23, 0.95);
-  color: #fff8f8;
-  border-color: rgba(255, 83, 96, 0.4);
+  background: rgba(255, 255, 255, 0.96);
+  color: #1c2239;
+  border-color: rgba(255, 83, 96, 0.35);
 }
 
 .start-future {
@@ -397,6 +403,24 @@ button.primary:disabled {
   animation: none;
 }
 
+.restart-session {
+  margin-top: 6px;
+  min-width: 220px;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 700;
+  color: #a22634;
+  border: 1px solid rgba(255, 126, 137, 0.52);
+  background: rgba(255, 242, 244, 0.95);
+  cursor: pointer;
+}
+
+.restart-session.small {
+  margin-top: 0;
+  min-width: auto;
+  padding: 8px 12px;
+}
+
 .participants-panel {
   display: grid;
   grid-template-rows: auto auto 1fr;
@@ -415,8 +439,8 @@ button.primary:disabled {
 .participant-item {
   padding: 10px 12px;
   border-radius: 10px;
-  background: rgba(36, 20, 26, 0.72);
-  border: 1px solid rgba(255, 102, 114, 0.28);
+  background: rgba(255, 244, 246, 0.95);
+  border: 1px solid rgba(255, 102, 114, 0.35);
   font-weight: 600;
 }
 
@@ -428,6 +452,13 @@ button.primary:disabled {
 
 .game-top .chip:last-child {
   justify-self: end;
+}
+
+.game-top-right {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .timer-ring-wrap {
@@ -444,7 +475,7 @@ button.primary:disabled {
 
 .ring-bg {
   fill: none;
-  stroke: rgba(255, 170, 176, 0.22);
+  stroke: rgba(255, 170, 176, 0.35);
   stroke-width: 10;
 }
 
@@ -514,7 +545,7 @@ button.primary:disabled {
   margin: 0;
   font-size: 12px;
   letter-spacing: 0.08em;
-  color: #ff9ea8;
+  color: #b02a39;
 }
 
 .name-tile-grid {
@@ -530,9 +561,9 @@ button.primary:disabled {
   display: grid;
   align-items: center;
   border-radius: 10px;
-  border: 1px solid rgba(255, 111, 123, 0.3);
-  background: rgba(26, 14, 19, 0.72);
-  color: #ffe7ea;
+  border: 1px solid rgba(255, 111, 123, 0.35);
+  background: rgba(255, 245, 246, 0.96);
+  color: #252946;
   font-size: 16px;
   font-weight: 700;
   padding: 8px 10px;
@@ -544,13 +575,13 @@ button.primary:disabled {
 .name-tile.is-scan {
   border-color: rgba(255, 211, 216, 0.95);
   box-shadow: 0 0 22px rgba(255, 86, 102, 0.55);
-  background: rgba(80, 23, 31, 0.78);
+  background: rgba(255, 226, 230, 0.95);
 }
 
 .ai-route-status {
   margin: 0;
   font-size: 15px;
-  color: #ffccd1;
+  color: #8e2734;
   letter-spacing: 0.02em;
   min-height: 24px;
 }
@@ -607,7 +638,7 @@ button.primary:disabled {
 .host-screen .host-name {
   text-align: center;
   margin-top: 8px;
-  color: #fff5f7;
+  color: #13192e;
 }
 
 .subline {
@@ -618,9 +649,9 @@ button.primary:disabled {
 }
 
 .host-screen .option {
-  background: rgba(24, 20, 27, 0.78);
-  border-color: rgba(255, 109, 121, 0.33);
-  color: #fff8f8;
+  background: rgba(255, 251, 251, 0.98);
+  border-color: rgba(255, 109, 121, 0.35);
+  color: #1c2238;
   min-height: 120px;
 }
 
